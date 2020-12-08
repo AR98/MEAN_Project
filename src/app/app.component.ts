@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ɵELEMENT_PROBE_PROVIDERS__POST_R3__ } from '@angular/platform-browser';
+import {Posts} from './models/Posts.model';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import { ɵELEMENT_PROBE_PROVIDERS__POST_R3__ } from '@angular/platform-browser'
 })
 export class AppComponent {
   title = 'mean-app';
-enteredPost=[]
+enteredPost:Posts[]=[]
   addPost(post){
     this.enteredPost.push(post);
     console.log(post)
