@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-post-create',
@@ -6,8 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent implements OnInit {
-content:string='Not entered yet'
-enteredValue='No content entered yet!'
+enteredTitle:string='';
+enteredContent:string='';
+
+@Output() enteredPost=new EventEmitter();
   constructor() { }
 
   ngOnInit(): void {
@@ -15,7 +17,12 @@ enteredValue='No content entered yet!'
 
 
   savePost(){
-   
-this.content=this.enteredValue
+   let post={
+     title: this.enteredTitle,
+     content: this.enteredContent
+   }
+
+this.enteredPost.emit(post);
+
   }
 }
