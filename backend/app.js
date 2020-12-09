@@ -1,6 +1,12 @@
 const express=require('express');
+const bodyparser=require('body-parser')
+
+
 
 const app=express();
+
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended:false}))
 
 app.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin","*");
@@ -9,7 +15,14 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.use('/app/posts',(req,res,next)=>{
+app.post('/app/posts',(req,res,next)=>{
+
+    const post=req.body;
+    console.log(post);
+    res.json({message:"data posted successfully!"})
+
+})
+app.get('/app/posts',(req,res,next)=>{
     console.log('second middleware initialised');
     const post=[
         {id:1, title: 'first Post', content: 'This is first post content here'},

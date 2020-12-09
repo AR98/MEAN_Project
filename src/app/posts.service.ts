@@ -25,7 +25,13 @@ private postsUpdated=new Subject<Posts[]>()
     return this.postsUpdated.asObservable();
   }
   addposts(p:Posts){
-    this.posts.push(p);
-    this.postsUpdated.next([...this.posts]);
+
+    this.http.post<{message:string}>('http://localhost:8080/app/posts',p).subscribe(res=>{
+      console.log(res.message);
+
+      this.posts.push(p);
+      this.postsUpdated.next([...this.posts]);
+    })
+  
   }
 }
