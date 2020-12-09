@@ -13,7 +13,7 @@ connection();
 app.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin","*");
     res.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETEOPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
     next();
 })
 
@@ -24,19 +24,30 @@ console.log('post method called')
         content: req.body.content
     }
     )
-
-
+// Storing post in Db
+    post.save().then(res=>console.log('successfully saved data in db')).catch(err=>console.log('somthing went wrong'))
     console.log(post);
     res.json({message:"data posted successfully!"})
 
 })
+
 app.get('/app/posts',(req,res,next)=>{
     console.log('second middleware initialised');
-    const post=[
-        {id:1, title: 'first Post', content: 'This is first post content here'},
-        {id:2, title: 'second Post', content: 'This is second post content here'}
-    ]
-    res.json({message:"posts fetched successful", post:post});
-})
+     
+    Post.find().then(data=>{
+
+        console.log(data);
+
+        res.json({message:"posts fetched successful", post:data});
+       }).catch(err=>console.log("somthing wrong went with fetching query"))
+   
+    })
+
+    app.delete('/app/posts/:id',(req,res,next)=>{
+
+        Post.deleteOne({_id: req.params.id}).then(data=>console.log('Successfully deleted post')).catch(err=>console.log('somthing went wrong with delete query'))
+
+        res.json({message: "successfully deleted"})
+    })
 
 module.exports=app

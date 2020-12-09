@@ -39,4 +39,9 @@ this.posts=item;
     // });
   }
 
+  delete(id:string){
+    console.log('delete function called')
+    this.postServices.deletePost(id);
+  }
+
 }
