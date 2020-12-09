@@ -28,8 +28,9 @@ export class PostListComponent implements OnInit {
 
   ngOnInit(): void {
     
+    console.log("I'm about to call getPosts")
+   this.postServices.getPosts()
     
-   // this.posts=this.postServices.getPosts()
     this.postServices.getUpdatedListener().subscribe((item:Posts[])=>{
 this.posts=item;
     })

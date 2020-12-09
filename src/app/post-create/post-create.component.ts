@@ -21,6 +21,7 @@ export class PostCreateComponent implements OnInit {
 
     if(form.invalid)return;
    let post:Posts={
+     id:null,
      title: form.value.title,
      content: form.value.content
    }
