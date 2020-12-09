@@ -1,12 +1,14 @@
 const express=require('express');
 const bodyparser=require('body-parser')
-
+const Post=require('./Models/post')
+const connection=require('./connection');
 
 
 const app=express();
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:false}))
+connection();
 
 app.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin","*");
@@ -16,8 +18,14 @@ app.use((req,res,next)=>{
 })
 
 app.post('/app/posts',(req,res,next)=>{
+console.log('post method called')
+    const post=new Post({
+        title: req.body.title,
+        content: req.body.content
+    }
+    )
 
-    const post=req.body;
+
     console.log(post);
     res.json({message:"data posted successfully!"})
 
