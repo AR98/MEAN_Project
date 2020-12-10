@@ -1,23 +1,20 @@
 const express=require('express');
 const bodyparser=require('body-parser')
-const Post=require('./Models/post')
-const connection=require('./connection');
-const router=require('./routes/Post')
+const Post=require('../Models/post')
+const connection=require('../connection');
 
-const app=express();
 
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({extended:false}))
-connection();
+const router=express.Router();
 
-app.use((req,res,next)=>{
+
+router.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin","*");
     res.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
     next();
 })
 
-app.post('/app/posts',(req,res,next)=>{
+router.post('',(req,res,next)=>{
 console.log('post method called')
     const post=new Post({
         title: req.body.title,
@@ -31,7 +28,7 @@ console.log('post method called')
 
 })
 
-app.get('/app/posts',(req,res,next)=>{
+router.get('',(req,res,next)=>{
     console.log('second middleware initialised');
      
     Post.find().then(data=>{
@@ -43,14 +40,14 @@ app.get('/app/posts',(req,res,next)=>{
    
     })
 
-    app.delete('/app/posts/:id',(req,res,next)=>{
+    router.delete('/:id',(req,res,next)=>{
 
         Post.deleteOne({_id: req.params.id}).then(data=>console.log('Successfully deleted post')).catch(err=>console.log('somthing went wrong with delete query'))
 
         res.json({message: "successfully deleted"})
     })
 
-    app.put('/app/posts/:id',(req,res,next)=>{
+    router.put('/:id',(req,res,next)=>{
         console.log('in put methos'+ req.body.title);
         // const post=new Post({
         //     title: req.body.title,
@@ -63,6 +60,4 @@ app.get('/app/posts',(req,res,next)=>{
         res.json({message: "successfully Updated"})
     } )
 
-app.use("/app/posts",router)
-
-module.exports=app
+    module.exports=router
