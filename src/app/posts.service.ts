@@ -3,6 +3,7 @@ import {Posts} from './models/Posts.model';
 import {Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import {map} from 'rxjs/operators';
 export class PostsService {
 private posts:Posts[]=[];
 private postsUpdated=new Subject<Posts[]>()
-  constructor( private http:HttpClient) { }
+  constructor( private http:HttpClient, private route:Router) { }
 
   getPosts(){
     console.log("I'm in getPost Method")
@@ -51,6 +52,7 @@ return data.post.map(p=>{
        const afterDelete= this.posts.filter(item=> item.id!==id)
        this.posts=afterDelete;
        this.postsUpdated.next([...this.posts])
+       this.route.navigate(["/"])
      })
     }
 
@@ -60,6 +62,9 @@ return data.post.map(p=>{
 
     updatePost(id:String,title:String,content: String){
       console.log('updated post called')
-      this.http.put("http://localhost:8080/app/posts/"+id, {title,content}).subscribe(res=>console.log(res))
+      this.http.put("http://localhost:8080/app/posts/"+id, {title,content}).subscribe(res=>{
+        console.log(res)
+        this.route.navigate(["/"])
+    })
     }
 }

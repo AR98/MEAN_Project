@@ -25,14 +25,15 @@ export class PostListComponent implements OnInit {
 
 
   constructor(public postServices: PostsService) { }
-
+isLoading:boolean=false
   ngOnInit(): void {
-    
+    this.isLoading=true;
     console.log("I'm about to call getPosts")
    this.postServices.getPosts()
     
     this.postServices.getUpdatedListener().subscribe((item:Posts[])=>{
 this.posts=item;
+this.isLoading=false
     })
     // this.posts.forEach(element => {
     //   console.log(element.title);

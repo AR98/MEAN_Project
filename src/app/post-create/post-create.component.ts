@@ -11,6 +11,7 @@ import { PostsService } from '../posts.service';
 })
 export class PostCreateComponent implements OnInit {
 mode:string='create';
+isLoading:boolean=false
 postId:string=null;
 post:Posts={
   id: null,
@@ -25,7 +26,9 @@ post:Posts={
 if(paraMap.has('postId')){
   this.mode='edit';
   this.postId=paraMap.get('postId');
+  this.isLoading=true;
   this.post=this.postService.getPost(this.postId);
+  this.isLoading=false
 }else{
   this.mode='create';
   this.postId=null
@@ -37,6 +40,7 @@ if(paraMap.has('postId')){
   savePost(form:NgForm){
 
     if(form.invalid)return;
+    this.isLoading=true
     let post:Posts={
       id:null,
       title: form.value.title,
