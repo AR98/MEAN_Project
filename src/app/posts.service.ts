@@ -48,9 +48,18 @@ return data.post.map(p=>{
 
    deletePost(id:string){
      this.http.delete('http://localhost:8080/app/posts/'+id).subscribe(res=>{
-       const afterDelete= this.posts.filter(item=> item.id!=id)
+       const afterDelete= this.posts.filter(item=> item.id!==id)
        this.posts=afterDelete;
        this.postsUpdated.next([...this.posts])
      })
-   }
+    }
+
+    getPost(pId:String){
+      return {...this.posts.find(p=>p.id===pId)}
+    }
+
+    updatePost(id:String,title:String,content: String){
+      console.log('updated post called')
+      this.http.put("http://localhost:8080/app/posts/"+id, {title,content}).subscribe(res=>console.log(res))
+    }
 }
