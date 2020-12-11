@@ -21,7 +21,8 @@ return data.post.map(p=>{
   return {
     title: p.title,
    content: p.content,
-   id:p._id
+   id:p._id,
+   image: p.image
   } 
 })
       }))
@@ -37,12 +38,17 @@ return data.post.map(p=>{
     return this.postsUpdated.asObservable();
   }
   addposts(p:Posts){
-
-    this.http.post<{message:string}>('http://localhost:8080/app/posts',p).subscribe(res=>{
+ const postData=new FormData();
+ postData.append("title" , p.title);
+ postData.append("content", p.content);
+ postData.append("image", p.image)
+    this.http.post<{message:string,post:Posts}>('http://localhost:8080/app/posts',postData).subscribe(res=>{
       console.log(res.message);
 
-      this.posts.push(p);
+      const p2=res.post
+      this.posts.push(p2);
       this.postsUpdated.next([...this.posts]);
+      this.route.navigate(["/"])
     })
   
    }
@@ -60,9 +66,26 @@ return data.post.map(p=>{
       return {...this.posts.find(p=>p.id===pId)}
     }
 
-    updatePost(id:String,title:String,content: String){
+    updatePost(id:string,title:string,content: string,image:string){
+  let  postData: Posts | FormData
+
+      if(typeof(image)==="object"){
+        postData=new FormData()
+        postData.append("title" , title);
+ postData.append("content", content);
+ postData.append("image", image)
+      }else{
+postData={
+  id: id,
+  title: title,
+  content:content,
+  image: image
+}
+      }
+    
       console.log('updated post called')
-      this.http.put("http://localhost:8080/app/posts/"+id, {title,content}).subscribe(res=>{
+      console.log(image);
+      this.http.put("http://localhost:8080/app/posts/"+id, postData).subscribe(res=>{
         console.log(res)
         this.route.navigate(["/"])
     })
