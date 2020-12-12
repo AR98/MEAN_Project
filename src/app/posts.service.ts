@@ -10,26 +10,27 @@ import { Router } from '@angular/router';
 })
 export class PostsService {
 private posts:Posts[]=[];
-private postsUpdated=new Subject<Posts[]>()
+private postsUpdated=new Subject<{posts:Posts[],postCount:number}>()
   constructor( private http:HttpClient, private route:Router) { }
 
-  getPosts(){
+  getPosts(postPerPage:number, currentPage:number){
     console.log("I'm in getPost Method")
-    this.http.get<{message:string,post:any}>('http://localhost:8080/app/posts')
+    const queryParam= `?pageSize=${postPerPage}&currentPage=${currentPage}`
+    this.http.get<{message:string,post:any, maxPosts:number}>('http://localhost:8080/app/posts'+queryParam)
     .pipe(map((data)=>{
-return data.post.map(p=>{
+return {posts: data.post.map(p=>{
   return {
     title: p.title,
    content: p.content,
    id:p._id,
    image: p.image
   } 
-})
-      }))
+}),maxposts:data.maxPosts}
+    }))
     .subscribe((transformeddata)=>{
-       this.posts=transformeddata;
+       this.posts=transformeddata.posts;
       //console.log(data.post)
-       this.postsUpdated.next([...this.posts]);
+       this.postsUpdated.next({posts:[...this.posts], postCount:transformeddata.maxposts});
     })
   }
 
@@ -45,21 +46,22 @@ return data.post.map(p=>{
     this.http.post<{message:string,post:Posts}>('http://localhost:8080/app/posts',postData).subscribe(res=>{
       console.log(res.message);
 
-      const p2=res.post
-      this.posts.push(p2);
-      this.postsUpdated.next([...this.posts]);
+      // const p2=res.post
+      // this.posts.push(p2);
+      // this.postsUpdated.next([...this.posts]);
       this.route.navigate(["/"])
     })
   
    }
 
    deletePost(id:string){
-     this.http.delete('http://localhost:8080/app/posts/'+id).subscribe(res=>{
-       const afterDelete= this.posts.filter(item=> item.id!==id)
-       this.posts=afterDelete;
-       this.postsUpdated.next([...this.posts])
-       this.route.navigate(["/"])
-     })
+     return this.http.delete('http://localhost:8080/app/posts/'+id)
+    //.subscribe(res=>{
+    //    const afterDelete= this.posts.filter(item=> item.id!==id)
+    //    this.posts=afterDelete;
+    //    this.postsUpdated.next([...this.posts])
+    //    this.route.navigate(["/"])
+    //  })
     }
 
     getPost(pId:String){

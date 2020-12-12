@@ -62,13 +62,26 @@ const url= req.protocol+'://'+ req.get("host");
 
 app.get('/app/posts',(req,res,next)=>{
     console.log('second middleware initialised');
-     
-    Post.find().then(data=>{
+     const pageSize=  +req.query.pageSize
+     const currentPage= +req.query.currentPage
+ let fetchPosts
+    const postQuery=Post.find()
+    if(pageSize && currentPage){
+        postQuery.skip(pageSize*(currentPage-1))
+        .limit(pageSize)
+    }
+    
+    postQuery.then(data=>{
+        fetchPosts=data
+        console.log(fetchPosts)
+        return Post.countDocuments()
+       
+    }).then(count=>{
 
-        console.log(data);
+       // console.log(data);
 
-        res.json({message:"posts fetched successful", post:data});
-       }).catch(err=>console.log("somthing wrong went with fetching query"))
+        res.json({message:"posts fetched successful", post:fetchPosts,maxPosts:count});
+       }).catch(err=>console.log("somthing wrong went with fetching query "+err))
    
     })
 
