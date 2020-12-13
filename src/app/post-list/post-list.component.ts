@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { Subscriber } from 'rxjs';
+import { Subscriber, Subscription } from 'rxjs';
+import { AuthService } from '../auth.service';
 import {Posts} from '../models/Posts.model';
 import {PostsService } from '../posts.service'
 
@@ -26,8 +27,9 @@ totalLength=0
 pagePerSize=2
 pageSizeOp=[1, 2, 3, 4, 5]
 currentPage=1
-
-  constructor(public postServices: PostsService) { }
+isUserAuthenticated:boolean=false
+authStatusSub: Subscription
+  constructor(public postServices: PostsService, private authService: AuthService) { }
 isLoading:boolean=false
   ngOnInit(): void {
     this.isLoading=true;
@@ -39,6 +41,12 @@ this.posts=item.posts;
 this.isLoading=false
 this.totalLength=item.postCount
 
+    })
+
+    this.isUserAuthenticated=this.authService. getIsAuth()
+
+    this.authStatusSub= this.authService.getauthStatusListener().subscribe(res=>{
+      this.isUserAuthenticated=res
     })
     // this.posts.forEach(element => {
     //   console.log(element.title);
