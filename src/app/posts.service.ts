@@ -23,11 +23,13 @@ return {posts: data.post.map(p=>{
     title: p.title,
    content: p.content,
    id:p._id,
-   image: p.image
+   image: p.image,
+   creator: p.creator
   } 
 }),maxposts:data.maxPosts}
     }))
     .subscribe((transformeddata)=>{
+      console.log(transformeddata)
        this.posts=transformeddata.posts;
       //console.log(data.post)
        this.postsUpdated.next({posts:[...this.posts], postCount:transformeddata.maxposts});
@@ -38,11 +40,11 @@ return {posts: data.post.map(p=>{
     console.log("I'm in getUpdateListener")
     return this.postsUpdated.asObservable();
   }
-  addposts(p:Posts){
+  addposts(title:string, content: string, image: File){
  const postData=new FormData();
- postData.append("title" , p.title);
- postData.append("content", p.content);
- postData.append("image", p.image)
+ postData.append("title" , title);
+ postData.append("content", content);
+ postData.append("image", image)
     this.http.post<{message:string,post:Posts}>('http://localhost:8080/app/posts',postData).subscribe(res=>{
       console.log(res.message);
 
@@ -81,7 +83,8 @@ postData={
   id: id,
   title: title,
   content:content,
-  image: image
+  image: image,
+  creator:null
 }
       }
     

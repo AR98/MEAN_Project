@@ -16,11 +16,13 @@ form:FormGroup
 imagePreview:string | ArrayBuffer
 isLoading:boolean=false
 postId:string=null;
+userId: string;
 post:Posts={
   id: null,
   title: null,
   content:null,
-  image:null
+  image:null,
+  creator: null
 }
   constructor(public postService:PostsService,public route:ActivatedRoute) { }
 
@@ -61,16 +63,12 @@ if(paraMap.has('postId')){
 
     if(this.form.invalid)return;
     this.isLoading=true
-    let post:Posts={
-      id:null,
-      title: this.form.value.title,
-      content: this.form.value.content,
-      image: this.form.value.image
-    }
     
     if(this.mode==='create'){
       
-      this.postService.addposts(post);
+      this.postService.addposts(this.form.value.title,
+        this.form.value.content,
+        this.form.value.image);
     }else if(this.mode==='edit'){
       this.postService.updatePost(this.postId,this.form.value.title,this.form.value.content,this.form.value.image);
     }

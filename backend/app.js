@@ -56,7 +56,8 @@ const url= req.protocol+'://'+ req.get("host");
     const post=new Post({
         title: req.body.title,
         content: req.body.content,
-        image: url+"/images/"+req.file.filename
+        image: url+"/images/"+req.file.filename,
+        creator: req.userData.userId
     }
     )
 // Storing post in Db
@@ -93,7 +94,15 @@ app.get('/app/posts',(req,res,next)=>{
 
     app.delete('/app/posts/:id',checkAuth,(req,res,next)=>{
 
-        Post.deleteOne({_id: req.params.id}).then(data=>console.log('Successfully deleted post')).catch(err=>console.log('somthing went wrong with delete query'))
+        Post.deleteOne({_id: req.params.id,creator: req.userData.userId}).then(data=>{
+            console.log('Successfully deleted post')
+            if(data.n>0)
+            res.json({message: "Successfully deleted"})
+            elseres.json({message: "user is not authorised to delete post"})
+            //console.log(data);
+            
+        }
+            ).catch(err=>console.log('somthing went wrong with delete query'))
 
         res.json({message: "successfully deleted"})
     })
@@ -107,8 +116,13 @@ app.get('/app/posts',(req,res,next)=>{
         //     content: req.body.content
         // })
 
-    Post.updateOne({_id:req.params.id},{$set: { title: req.body.title, content: req.body.content, image: image} })
-    .then(data=>res.json({message: "successfully Updated"}))
+    Post.updateOne({_id:req.params.id, creator: req.userData.userId},{$set: { title: req.body.title, content: req.body.content, image: image, creator: req.userData.userId} })
+    .then(data=>{
+        console.log(data);
+        if(data.n>0)
+        res.json({message: "successfully Updated"})
+        else res.json({message: "user is not authorised"})
+    })
     .catch(data=>console.log('somthing went wrong with update query'))
         
     } )
@@ -154,7 +168,7 @@ app.get('/app/posts',(req,res,next)=>{
                     {expiresIn: "1h"}
                     )
 
-                    res.json({token: token, expiresIn: 3600})
+                    res.json({token: token, expiresIn: 3600, userId: fetchedUser._id})
                 }).catch(err=>{
                 res.json({message: "Auth failed to generate token"})
               })

@@ -29,17 +29,21 @@ pageSizeOp=[1, 2, 3, 4, 5]
 currentPage=1
 isUserAuthenticated:boolean=false
 authStatusSub: Subscription
+userId:string
   constructor(public postServices: PostsService, private authService: AuthService) { }
 isLoading:boolean=false
   ngOnInit(): void {
     this.isLoading=true;
     console.log("I'm about to call getPosts")
+    this.userId=this.authService.getuserId()
    this.postServices.getPosts(this.pagePerSize,this.currentPage)
+   
     
     this.postServices.getUpdatedListener().subscribe((item: {posts:Posts[],postCount:number})=>{
 this.posts=item.posts;
 this.isLoading=false
 this.totalLength=item.postCount
+
 
     })
 
@@ -47,6 +51,7 @@ this.totalLength=item.postCount
 
     this.authStatusSub= this.authService.getauthStatusListener().subscribe(res=>{
       this.isUserAuthenticated=res
+      this.userId=this.authService.getuserId()
     })
     // this.posts.forEach(element => {
     //   console.log(element.title);
