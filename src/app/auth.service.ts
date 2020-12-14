@@ -20,6 +20,7 @@ private authStatusListerner= new Subject<boolean>()
     console.log(authData)
     this.http.post('http://localhost:8080/app/user/signUp',authData).subscribe(res=>{
       console.log(res);
+      this.router.navigate(['/'])
     })
   }
 

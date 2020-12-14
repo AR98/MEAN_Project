@@ -9,7 +9,7 @@ export class AuthIntercepter implements HttpInterceptor{
 
     intercept(req: HttpRequest<any>,next: HttpHandler){
         const authToken=this.authService.getToken()
-        console.log(authToken)
+      console.log("auth-intercepter called")
         const authRequest=req.clone({
             headers:  req.headers.set("authorization", 'Bearer '+ authToken)
         })

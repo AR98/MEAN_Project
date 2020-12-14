@@ -87,7 +87,7 @@ app.get('/app/posts',(req,res,next)=>{
 
        // console.log(data);
 
-        res.json({message:"posts fetched successful", post:fetchPosts,maxPosts:count});
+     return   res.json({message:"posts fetched successful", post:fetchPosts,maxPosts:count});
        }).catch(err=>console.log("somthing wrong went with fetching query "+err))
    
     })
@@ -104,7 +104,7 @@ app.get('/app/posts',(req,res,next)=>{
         }
             ).catch(err=>console.log('somthing went wrong with delete query'))
 
-        res.json({message: "successfully deleted"})
+     return   res.json({message: "successfully deleted"})
     })
 
     app.put('/app/posts/:id',checkAuth,multer({storage: storage}).single("image"),(req,res,next)=>{
@@ -137,11 +137,11 @@ app.get('/app/posts',(req,res,next)=>{
             password: hash
         })
             user.save().then(result=>{
-                res.json({message: "user saved successfully",result:result})
+              return  res.json({message: "user saved successfully",result:result})
             })
        }).catch(err=>{
            console.log(err);
-        res.json({err:err})
+      return  res.status(401).json({error:err})
     })
    
     })
@@ -168,9 +168,9 @@ app.get('/app/posts',(req,res,next)=>{
                     {expiresIn: "1h"}
                     )
 
-                    res.json({token: token, expiresIn: 3600, userId: fetchedUser._id})
+                  return  res.json({token: token, expiresIn: 3600, userId: fetchedUser._id})
                 }).catch(err=>{
-                res.json({message: "Auth failed to generate token"})
+                 return res.json({message: "Auth failed to generate token"})
               })
        })
 
