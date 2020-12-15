@@ -137,11 +137,11 @@ app.get('/app/posts',(req,res,next)=>{
             password: hash
         })
             user.save().then(result=>{
-              return  res.json({message: "user saved successfully",result:result})
-            })
-       }).catch(err=>{
-           console.log(err);
-      return  res.status(401).json({error:err})
+              res.json({message: "user saved successfully",result:result})
+            }).catch(err=>{
+                console.log("sign up error "+err);
+           res.status(401).json({error:err})
+       })
     })
    
     })
@@ -160,7 +160,8 @@ app.get('/app/posts',(req,res,next)=>{
         }).then(
             result=>{
                 if(!result){
-                    return res.json({message: "Auth failed to match password"})
+                    console.log("user not matched")
+                    res.status(401).json({message: "Auth failed to match password"})
                 }  
 
                 const token=jwt.sign({email: fetchedUser.email, userId: fetchedUser._id},
@@ -169,7 +170,7 @@ app.get('/app/posts',(req,res,next)=>{
                     )
 
                   return  res.json({token: token, expiresIn: 3600, userId: fetchedUser._id})
-                }).catch(err=>{
+                 }).catch(err=>{
                  return res.json({message: "Auth failed to generate token"})
               })
        })
